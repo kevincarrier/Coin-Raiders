@@ -6,7 +6,16 @@ const static = express.static(__dirname + "/public");
 const ejs = require('ejs');
 const ws = require('ws'); 
 const http = require('http');
-// web socket logic const ws_server = require(); 
+const winston = require('winston'); 
+// web socket logic const ws_server = require();
+
+let logger = winston.createLogger({
+	level: 'debug',
+	transports: [
+		new (winston.transports.Console)({ colorize: true }),
+	]
+}); 
+
 app.use(static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
