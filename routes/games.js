@@ -37,7 +37,7 @@ router.post("/",async(req,res)=>{
 			// res.cookie("AuthCookie", playername, { expires: new Date(Date.now() + 900000) });
 			// console.log("login",res.cookies);
 			//res.render() page for game
-			res.redirect("/game?name="+playername+"&idx="+index);
+			res.redirect("/coinraiders?name="+playername+"&idx="+index);
 		} 
 		else res.send("Player name occpuied or wrong index number");
 	}
@@ -46,7 +46,7 @@ router.post("/",async(req,res)=>{
 	}
 });
 
-router.get("/game",async(req,res)=>{
+router.get("/coinraiders",async(req,res)=>{
 	try{
 		let playername = req.query.name;
 		let index = req.query.idx;
