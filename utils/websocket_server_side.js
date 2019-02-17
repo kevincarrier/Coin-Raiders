@@ -1,18 +1,26 @@
 // ==================================
 // Websocket Server Side Code 
 // ==================================
+let user_info_list=new Array();
 
+function check(user_info_list,user){
+	for (let i=0;i<user_info_list.length;++i){
+		if(user_info_list.name==user.name)return false;
+	}
+	return true;
+}
 module.exports = function (logger) {
 	let ws_server = {};
 	// process web socket messages
 	ws_server.process_msg = function (ws, data) {
-		
+		console.log(data);
+		let updatemessage;
 		if(data.type==="user_command"){
 
 			if(data.command==="leave to be continue"){
 
 				//sendMsg({msg: 'backmessage'});
-				let updatemessage={msg: 'backmessage'};
+				updatemessage={msg: 'backmessage'};
 				return updatemessage;
 			}
 			else if(data.command==="x"){
@@ -31,8 +39,15 @@ module.exports = function (logger) {
 				
 			}
 		}
-		else if(data.type==2){
-
+		else if(data.type==='user_info_req'){
+			let obj = 	{
+						playername: data.name,
+						idx:data.idx
+			};
+			if(check(user_info_list,obj))user_info_list.push(obj);
+			console.log("user_info_req");
+			updatemessage={msg: 'user_info',data:user_info_list};
+			return updatemessage;
 		}
 		else if(data.type==3){
 			
