@@ -425,6 +425,7 @@
       
       // console.log(boardList[idx].coinMap, boardList[idx].player_i, boardList[idx].player_j)
       if (boardList[idx].coinMap[boardList[idx].player_i][boardList[idx].player_j] != 0) {
+        boardList[idx].coinMap[boardList[idx].player_i][boardList[idx].player_j] = 0
         boardList[idx].score ++
         boardList[idx].scoreLabel.text = "score: " + boardList[idx].score
 
