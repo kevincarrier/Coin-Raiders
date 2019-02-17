@@ -19,13 +19,9 @@
   <!--Kevin Blockly-->
   
   <script src="scripts/customblocks.js"></script>
-  <script src="scripts/execute.js"></script>
+  <!-- <script src="scripts/execute.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   
-
-
-
-
 
   <div id="mainDiv" class="container-fluid">
     <div id="gameDiv"></div>
@@ -43,13 +39,11 @@
         </value>
     </block>
     
-    
     <!--Kevin Custom Blocks-->
     <block type="move_left"></block>
     <block type="move_right"></block>
     <block type="move_up"></block>
     <block type="move_down"></block>
-    
     
     <!--
       Kevin - Unneeded Blocks
@@ -76,11 +70,7 @@
       <block type="controls_if"></block>
       <block type="text"></block>
       <block type="text_print"></block>
-    
-    
     -->
-    
-    
     </xml></div>
   </div>
   
@@ -94,7 +84,6 @@
     let excutedInputData = {}
 
     let gameState = {
-      curPlayerName: '',
       winState: [],
       playersName: [],
       playersReadyData: [],
@@ -102,6 +91,26 @@
       playersGridData: [],
       playersInputData: [],
       playersCoinMap: {}
+    }
+
+    const urlParams = new URLSearchParams(location.search)
+    let curName = urlParams.get('name')
+    let curIdx = urlParams.get('idx')
+
+    function runCode() {
+      Blockly.JavaScript.addReservedWords('code');
+      var code = Blockly.JavaScript.workspaceToCode(Blockly.getMainWorkspace())
+      try {
+        //eval(code)
+        // passed the test, now what...
+        let codeArr = code.split(',')
+        codeArr.pop()
+        console.log(codeArr)
+
+      } catch (e) {
+        // failed so show the error
+        alert(e)
+      }
     }
 
     let Application = PIXI.Application,
@@ -131,21 +140,19 @@
       .add("images/box1.png")
       .load(setup)
     
+    let boardList = []
     let state
     const CELL_WIDTH = 32
-    function setupBoard(grids, name, score, isYou) {
-      name = 'test'
-      score = 9887
-      grids = [[0, 4, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 3, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 2, 2, 2, 2, 2, 0, 0],
-               [0, 3, 0, 0, 0, 0, 0, 0],
-               [0, 3, 3, 0, 0, 0, 0, 0],
-               [0, 0, 3, 3, 3, 3, 3, 3]]
+    function setupBoard(grids, score, idx) {
+      score = 0
+
+      if (idx == curIdx) 
+        isYou = true
+      else
+        isYou = false
 
       let container = new PIXI.Container()
+      container.coins = {}
 
       if (isYou) {
         let box1 = new Sprite(resources["images/box1.png"].texture)
@@ -174,33 +181,40 @@
       for (let i = 0; i < grids.length; i++) {
         for (let j = 0; j < grids[0].length; j++) {
           let val = grids[i][j]
-          
           if (val == 2) {
             // Block
             let sp = new Sprite(resources["images/block2.png"].texture)
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
+            container.player = sp
           } else if (val == 3) {
             // Coin
             let sp = new Sprite(resources["images/coin.png"].texture)
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
-
-            
-          }else if (val == 4) {
+            container.coins['i'+i+'j'+j] = sp
+          } else if (val == 4) {
             // Player initial position
             let sp = new Sprite(resources["images/character1.png"].texture)
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
+            console.log('aaa')
           }
         }
       }
 
-      // let coinMap = []
-      // playersCoinMap[name] = coinMap
+      let coinMap = grids.slice()
+      for (let i = 0; i < coinMap.length; i++) {
+        for (let j = 0; j < coinMap[0].length; j++) {
+          if (coinMap[i][j] != 3) {
+            coinMap[i][j] = 0
+          }
+        }
+      }
+      gameState.playersCoinMap[name] = coinMap
 
       // Name
       let basicText = new PIXI.Text(name)
@@ -211,7 +225,7 @@
       container.addChild(basicText)
       // Score
       let scoreText = new PIXI.Text('score: ' + score)
-      scoreText.style.fill = 0xffffff;
+      scoreText.style.fill = 0xffffff
       scoreText.style.fontSize = 20
       scoreText.x = 150
       scoreText.y = -25
@@ -220,49 +234,82 @@
       return container
     }
 
+    function move(idx, command) {
+      if (command == '')
+      boardList[idx].player 
+    }
+
     function setup() {
       //Create the `cat` sprite 
       // land1 = new Sprite(resources["images/land1.png"].texture);
       // land1.x = 96;
       // land1.y = 96;
-      let board0 = setupBoard([], '', '', false)
-      let board1 = setupBoard([], '', '', true)
-      let board2 = setupBoard()
-      let board3 = setupBoard()
-
-      board0.x = 50
-      board0.y = 90
-
-      board1.x = 400
-      board1.y = 90
-
-      board2.x = 50
-      board2.y = 400
-
-      board3.x = 400
-      board3.y = 400
 
       let bg = new Sprite(resources["images/bg.png"].texture)
       app.stage.addChild(bg)
 
-      let team1text = new PIXI.Text('Team 1   Score 2000')
+      let team1text = new PIXI.Text('Team 1   Score 0')
       team1text.style.fill = 0xffffff
       team1text.style.fontSize = 30
       team1text.x = 30
       team1text.y = 5
       app.stage.addChild(team1text)
 
-      let team2text = new PIXI.Text('Team 2   Score 2000')
+      let team2text = new PIXI.Text('Team 2   Score 0')
       team2text.style.fill = 0xffffff
       team2text.style.fontSize = 30
       team2text.x = 380
       team2text.y = 5
       app.stage.addChild(team2text)
 
-      app.stage.addChild(board0)
-      app.stage.addChild(board1)
-      app.stage.addChild(board2)
-      app.stage.addChild(board3)
+      let grids0 =
+        [[0, 4, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [2, 3, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 2, 2, 2, 2, 2, 0, 0],
+        [0, 3, 0, 0, 0, 0, 0, 0],
+        [0, 3, 3, 0, 0, 0, 0, 0],
+        [0, 0, 3, 3, 3, 3, 3, 3]]
+
+      let grids1 =
+        [[0, 0, 0, 0, 4, 0, 0, 0],
+        [0, 0, 0, 0, 0, 3, 0, 0],
+        [0, 3, 2, 2, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [2, 2, 2, 2, 2, 2, 0, 0],
+        [0, 3, 0, 0, 0, 0, 3, 0],
+        [0, 3, 3, 3, 3, 3, 3, 3],
+        [0, 0, 0, 0, 0, 0, 3, 0]]
+      
+      
+      // let board0 = setupBoard(JSON.parse(JSON.stringify(grids0)), '', true)
+      // let board1 = setupBoard(JSON.parse(JSON.stringify(grids0)), '', true)
+      // let board2 = setupBoard(JSON.parse(JSON.stringify(grids1)), '', true)
+      // let board3 = setupBoard(JSON.parse(JSON.stringify(grids1)), '', false)
+
+      // boardList.push(board0)
+      // boardList.push(board1)
+      // boardList.push(board2)
+      // boardList.push(board3)
+
+      for (let i = 0; i < 4; i++) {
+        let board = setupBoard(JSON.parse(JSON.stringify(grids0)), '', i)
+        boardList.push(board)
+        app.stage.addChild(board)
+      }
+
+      boardList[0].x = 50
+      boardList[0].y = 90
+
+      boardList[1].x = 400
+      boardList[1].y = 90
+
+      boardList[2].x = 50
+      boardList[2].y = 400
+
+      boardList[3].x = 400
+      boardList[3].y = 400
 
       //Set the game state
       state = play
@@ -275,24 +322,27 @@
       state(delta)
     }
     let excutingInput = {}
+
+    interval = 0
     function play(delta) {
+      // Game main loop.
+      if (interval < delta) {
+        interval += delta
+        return
+      } 
+      interval = 0
+
       for (let key in excutingInput) {
-        
+        let command = excutingInput[key].shift()
+        move(idx, command)
       }
     }
   
-    function dataChange() {
-      // This function run at after gameState updated by other function.
-      // When game data changes(Get broadcast from the server)
-      // Check wether the input commands get excuted. If not excuted the input command with certain speed.
-      let inputDatas = gameState.playersInputData
-      for (let key in inputDatas) {
-        let inputData = inputDatas[key]
-        if (!(key in excutedInputData)) {
-          excutedInputData[key] = inputData
-          excutingInput[key] = inputData
-        }
-      }
+    function inputChanges(changeRet) {
+      let idx = changeRet.idx
+      let inputCommands = changeRet.inputCommands
+
+      excutingInput[idx] = inputCommands
     }
   </script>
 </body>
