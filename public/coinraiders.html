@@ -92,7 +92,7 @@
     let executeCount = 0
       let wsTxt = '[ws]';
       let ws_c
-
+      let alerted=false;
         function connect_to_server() {
           let connected = false;
           connect();
@@ -155,9 +155,13 @@
                 console.log("Received user info");
                 console.log(msgObj.data);//get all user name
                 // console.log(msgObj.data[0])
+                
                 if (msgObj.data.length >= 4) {
                   $('#runcodebtn').show()
-                  alert("Game Start!")
+                  if(!alerted){
+                    alert("Game Start!")
+                    alerted=true
+                  }
                 } else{
                   $('#runcodebtn').hide()
                 }
@@ -166,12 +170,6 @@
                   // console.log('ssssss', i,msgObj.data[i].idx,msgObj.data[i].playername)
                   boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
                 }
-              }
-              else if (msgObj.msg === "") {
-
-              }
-              else if (msgObj.msg === "") {
-
               }
             }
             catch (e) {
@@ -197,6 +195,7 @@
           };
           if (obj.command) {
             ws_c.send(JSON.stringify(obj));
+            $('#command').hide()
           }
           return false;
         });
@@ -266,6 +265,7 @@
         };
         if (obj.command) {
           ws_c.send(JSON.stringify(obj));
+          $('#runcodebtn').hide()
         }
       } catch (e) {
         // failed so show the error
