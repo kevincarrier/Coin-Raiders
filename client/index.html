@@ -1,29 +1,87 @@
 <!doctype html>
 <meta charset="utf-8">
+
+<head>
+ 
+  <!--Kevin Custom CSS-->
+  <link rel="stylesheet" href="styles/index.css">
+   <!--Kevin Google Material-->
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+</head>
+
+
 <title>Game states</title>
 
 <body>
   <script src="pixi.js"></script>
   <script src="./google-blockly-82871b3/blockly_compressed.js"></script>
   <script src="./google-blockly-82871b3/blocks_compressed.js"></script>
+  <script src="./google-blockly-82871b3/javascript_compressed.js"></script>
   <script src="./google-blockly-82871b3/msg/js/en.js"></script>
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  <script src="scripts/customblocks.js"></script>
+  <script src="scripts/execute.js"></script>
+
+
+  <button type="button" class="btnRun" onclick="runCode()">Run Code</button>
+  <br/>
+  <br/>
+  <div id="blocklyDiv" style="height: 500px; width: 600px;"></div>
 
   <xml id="toolbox" style="display: none">
-    <block type="controls_if"></block>
-    <block type="controls_repeat_ext"></block>
-    <block type="logic_compare"></block>
-    <block type="math_number"></block>
-    <block type="math_arithmetic"></block>
-    <block type="text"></block>
-    <block type="text_print"></block>
-  </xml>
+     
+    <block type="custom_repeat">
+        <value name="TIMES">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+        </value>
+    </block>
+    
 
-  <script>
-    var workspace = Blockly.inject('blocklyDiv',
-      { toolbox: document.getElementById('toolbox') });
-  </script>
+    <!--Kevin Custom Blocks-->
+    <block type="move_left"></block>
+    <block type="move_right"></block>
+    <block type="move_up"></block>
+    <block type="move_down"></block>
+    
+    
+    <!--
+      Kevin - Unneeded Blocks
   
+       <block type="controls_repeat_ext">
+          <value name="TIMES">
+              <shadow type="math_number">
+                <field name="NUM">3</field>
+              </shadow>
+          </value>
+      </block>
+
+
+       <block type="controls_repeat_ext">
+        <value name="TIMES">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+        </value>
+    </block>
+      <block type="logic_compare"></block>
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="controls_if"></block>
+      <block type="text"></block>
+      <block type="text_print"></block>
+  
+  
+    -->
+    
+    
+  </xml>
+  
+    <script>
+      var workspace = Blockly.inject('blocklyDiv',
+        { toolbox: document.getElementById('toolbox') });
+    </script>
+
   <script>
     //Aliases
     let Application = PIXI.Application,
@@ -71,4 +129,7 @@
       cat.x += cat.vx;
     }
   </script>
+
+
+
 </body>
