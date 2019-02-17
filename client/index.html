@@ -7,7 +7,7 @@
    <!--Kevin Bootstrap-->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
 </head>
-<title>Coin Raider</title>
+<title>Coin Raiders</title>
 
 <body>
   <script src="pixi.js"></script>
@@ -26,7 +26,9 @@
   <div id="mainDiv" class="container-fluid">
     <div id="gameDiv"></div>
     <div id="commandDiv">
-      <button type="button" class="btnRun btn btn-success" onclick="runCode()">Run Code</button>
+      <br/>
+      <button type="button" class="btnRun btn btn-lg btn-success" onclick="runCode()">Run Code</button>
+      <a href="../public/page.html"><button type="button" class="btnExit btn-lg btn-secondary" style="margin-left:25px;">Exit Game</button></a>
       <br/>
       <br/>
       <div id="blocklyDiv" style="height: 480px; width: 500px;"></div>
@@ -44,34 +46,10 @@
     <block type="move_right"></block>
     <block type="move_up"></block>
     <block type="move_down"></block>
-    
-    <!--
-      Kevin - Unneeded Blocks
-    
-       <block type="controls_repeat_ext">
-          <value name="TIMES">
-              <shadow type="math_number">
-                <field name="NUM">3</field>
-              </shadow>
-          </value>
-      </block>
-    
-    
-       <block type="controls_repeat_ext">
-        <value name="TIMES">
-            <shadow type="math_number">
-              <field name="NUM">3</field>
-            </shadow>
-        </value>
-    </block>
-      <block type="logic_compare"></block>
-      <block type="math_number"></block>
-      <block type="math_arithmetic"></block>
-      <block type="controls_if"></block>
-      <block type="text"></block>
-      <block type="text_print"></block>
-    -->
-    </xml></div>
+
+    </xml>
+    <br/>
+    <img src="images/CoinRaiders.png" style="width:250px" /></div>
   </div>
   
   <script>

@@ -7,3 +7,6 @@ body{
 #commandDiv{
     float:right;
 }
+html,#mainDiv{
+    background-color: #313131;
+}
