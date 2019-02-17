@@ -14,11 +14,11 @@ function connect_to_server(){
 		}
 		console.log(wsTxt + ' Connecting to websocket', wsUri);
 
-		ws = new WebSocket(wsUri);
-		ws.onopen = function (evt) { onOpen(evt); };
-		ws.onclose = function (evt) { onClose(evt); };
-		ws.onmessage = function (evt) { onMessage(evt); };
-		ws.onerror = function (evt) { onError(evt); };
+		ws_c = new WebSocket(wsUri);
+		ws_c.onopen = function (evt) { onOpen(evt); };
+		ws_c.onclose = function (evt) { onClose(evt); };
+		ws_c.onmessage = function (evt) { onMessage(evt); };
+		ws_c.onerror = function (evt) { onError(evt); };
 	}
 
 	function onOpen(evt) {
@@ -46,6 +46,7 @@ function connect_to_server(){
 			else if(msgObj.msg === "user_info"){
 				console.log("Received user info");
 				console.log(msgObj.data);//get all user name
+				console.log(msgObj.data[0]);
 			}
 			else if(msgObj.msg === ""){
 

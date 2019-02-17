@@ -12,7 +12,7 @@ function check(playerlist,playername){
 
 router.get("/",async(req,res)=>{
 	try{
-		res.render("../public/page");
+		res.render("../public/page.html");
 		// if(req.cookies && req.cookies.AuthCookie){
 		// 	res.redirect("/game");
 		// }
@@ -53,7 +53,7 @@ router.get("/game",async(req,res)=>{
 		console.log("game board"); 
 		console.log(playername);
 		console.log(index);
-		res.render("../public/game",{playername:playername,idx:index});
+		res.render("../public/coinraiders",{playername:playername,idx:index});
 		// if(req.cookies && req.cookies.AuthCookie){
 			
 		// 	//res.render() page for game

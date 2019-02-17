@@ -6,6 +6,12 @@
   <link rel="stylesheet" href="styles/index.css">
    <!--Kevin Bootstrap-->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="js/ui_event.js"></script>
+    <script type="text/javascript" src="js/websocket.js"></script>
 </head>
 <title>Coin Raider</title>
 
@@ -72,10 +78,52 @@
       <block type="text_print"></block>
     -->
     </xml></div>
+    <button type="submit" id="command" class="btn btn-primary">Submit</button>
+        <button type="submit" id="start" class="btn btn-primary">Start</button>
+        <p id="playername"><%=playername%></p>
+        <p id="idx"><%=idx%></p>
   </div>
   
   <script>
     // Fixed window injection
+    let ws_c = {};
+$(document).ready(function () {
+  $('#command').hide();
+  $('#playername').hide();
+  $('#idx').hide();
+  connect_to_server();
+  $('#command').click(function(){
+    console.log("hhhh");
+    console.log('----------command from user-------------');
+    let obj =   {
+            type: 'user_command',
+            command: 'leave to be continue'
+        };
+    if(obj.command){
+      ws_c.send(JSON.stringify(obj));
+    }
+    return false;
+  });
+
+  $('#start').click(function(){
+    let name=document.getElementById("playername").innerHTML;
+    let idx=document.getElementById("idx").innerHTML;
+    console.log("login board",name,idx);
+    console.log('----------command from user-------------');
+    let obj =   {
+            type: 'user_info_req',
+            name: name,
+            idx:idx
+        };
+    console.log(obj);
+    if(obj.name){
+      ws_c.send(JSON.stringify(obj));
+      $('#start').hide();
+      $('#command').show();
+    }
+    return false;
+  });
+});
     var workspace = Blockly.inject('blocklyDiv',
       { toolbox: document.getElementById('toolbox') });
   </script> 
