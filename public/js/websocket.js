@@ -43,8 +43,9 @@ function connect_to_server(){
 				console.log("Received");
 				console.log(msgObj);
 			}
-			else if(msgObj.msg === "updatemessage"){
-
+			else if(msgObj.msg === "user_info"){
+				console.log("Received user info");
+				console.log(msgObj.data);//get all user name
 			}
 			else if(msgObj.msg === ""){
 
