@@ -1,24 +1,88 @@
 <!doctype html>
 <meta charset="utf-8">
+<head>
+ 
+  <!--Kevin Custom CSS-->
+  <link rel="stylesheet" href="styles/index.css">
+   <!--Kevin Bootstrap-->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+</head>
 <title>Coin Raider</title>
 
 <body>
   <script src="pixi.js"></script>
   <script src="./google-blockly-82871b3/blockly_compressed.js"></script>
   <script src="./google-blockly-82871b3/blocks_compressed.js"></script>
+  <script src="./google-blockly-82871b3/javascript_compressed.js"></script>
   <script src="./google-blockly-82871b3/msg/js/en.js"></script>
   
-  <!-- <div id="blocklyDiv" style="height: 480px; width: 600px;"></div> -->
+  <!--Kevin Blockly-->
+  
+  <script src="scripts/customblocks.js"></script>
+  <script src="scripts/execute.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  
 
-  <xml id="toolbox" style="display: none">
-    <block type="controls_if"></block>
-    <block type="controls_repeat_ext"></block>
-    <block type="logic_compare"></block>
-    <block type="math_number"></block>
-    <block type="math_arithmetic"></block>
-    <block type="text"></block>
-    <block type="text_print"></block>
-  </xml>
+
+
+
+
+  <div id="mainDiv" class="container-fluid">
+    <div id="gameDiv"></div>
+    <div id="commandDiv">
+      <button type="button" class="btnRun btn btn-success" onclick="runCode()">Run Code</button>
+      <br/>
+      <br/>
+      <div id="blocklyDiv" style="height: 480px; width: 500px;"></div>
+      <xml id="toolbox" style="display: none">
+      <block type="custom_repeat">
+        <value name="TIMES">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+        </value>
+    </block>
+    
+    
+    <!--Kevin Custom Blocks-->
+    <block type="move_left"></block>
+    <block type="move_right"></block>
+    <block type="move_up"></block>
+    <block type="move_down"></block>
+    
+    
+    <!--
+      Kevin - Unneeded Blocks
+    
+       <block type="controls_repeat_ext">
+          <value name="TIMES">
+              <shadow type="math_number">
+                <field name="NUM">3</field>
+              </shadow>
+          </value>
+      </block>
+    
+    
+       <block type="controls_repeat_ext">
+        <value name="TIMES">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+        </value>
+    </block>
+      <block type="logic_compare"></block>
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="controls_if"></block>
+      <block type="text"></block>
+      <block type="text_print"></block>
+    
+    
+    -->
+    
+    
+    </xml></div>
+  </div>
   
   <script>
     // Fixed window injection
@@ -56,7 +120,8 @@
     }
     );
     //Add the canvas that Pixi automatically created for you to the HTML document
-    document.body.appendChild(app.view);
+    //document.body.appendChild(app.view);
+    $("#mainDiv").append(app.view);
     loader
       .add("images/land1.png")
       .add("images/block2.png")
