@@ -54,8 +54,9 @@ function setupWebSocket() {
 			}
 				
 			if (data) {
-				console.log(data);
-				ws_server.process_msg(ws, data);							//pass the websocket msg for processing
+
+				let updata=ws_server.process_msg(ws, data);							//pass the websocket msg for processing
+				wss.broadcast(updata);
 			}
 		});
 
@@ -69,7 +70,7 @@ function setupWebSocket() {
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try {
-				logger.debug('[ws] broadcasting to clients. ', (++i), data.msg);
+				logger.debug('[ws] broadcasting to clients. ', (++i), data);
 				client.send(JSON.stringify(data));
 			}
 			catch (e) {

@@ -39,11 +39,11 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			let msgObj = JSON.parse(msg.data);
-
 			if(msgObj.msg === "backmessage"){
 				console.log("Received");
+				console.log(msgObj);
 			}
-			else if(msgObj.msg === ""){
+			else if(msgObj.msg === "updatemessage"){
 
 			}
 			else if(msgObj.msg === ""){

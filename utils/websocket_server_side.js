@@ -8,10 +8,12 @@ module.exports = function (logger) {
 	ws_server.process_msg = function (ws, data) {
 		
 		if(data.type==="user_command"){
-			console.log("backmessage");
-			sendMsg({msg: 'backmessage'});
-			if(data.command==="x"){
 
+			if(data.command==="leave to be continue"){
+
+				//sendMsg({msg: 'backmessage'});
+				let updatemessage={msg: 'backmessage'};
+				return updatemessage;
 			}
 			else if(data.command==="x"){
 				
