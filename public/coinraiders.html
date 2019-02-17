@@ -32,7 +32,7 @@
   <div id="mainDiv" class="container-fluid">
     <div id="gameDiv"></div>
     <div id="commandDiv">
-      <button type="button" class="btnRun btn btn-success" onclick="runCode()">Run Code</button>
+      <button id="runcodebtn" type="button" class="btnRun btn btn-success" onclick="runCode()">Run Code</button>
       <br/>
       <br/>
       <div id="blocklyDiv" style="height: 480px; width: 500px;"></div>
@@ -116,9 +116,7 @@
           function onOpen(evt) {
             console.log(wsTxt + ' CONNECTED');
             connected = true;
-
-
-                    let obj = {
+            let obj = {
               type: 'user_info_req',
               name: curName,
               idx: curIdx
@@ -154,6 +152,8 @@
                 console.log("Received user info");
                 console.log(msgObj.data);//get all user name
                 // console.log(msgObj.data[0]);
+
+                $('#runcodebtn').hide()
 
                 for (let i = 0; i < msgObj.data.length; i++) {
                   boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
