@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>CSGame</title>
+        <!--Index CSS-->
+        <link rel="stylesheet" href="styles/index.css">
+
+        <!--Google Material Design-->
+        <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+    </head>
+    <body mode="maker">
+        <header class="mdl-color--cyan-500">
+            <h1 class="mode-maker">CS Game</h1>
+            <h1 class="mode-edit mode-blockly">Editing</h1>
+        </header>
+
+        <main>
+            <div class="blockly-editor">
+                <div id="blockly-div" style="height: 480px; width: 400px;"></div>
+                <xml id="toolbox" style="display: none">
+                   <category name="%{BKY_CATLOGIC}" colour="%{BKY_LOGIC_HUE}">
+                                <block type="controls_if"></block>
+                                <block type="logic_compare"></block>
+                                <block type="logic_operation"></block>
+                                <block type="logic_negate"></block>
+                                <block type="logic_boolean"></block>
+                                <block type="logic_null"></block>
+                                <block type="logic_ternary"></block>
+                    </category>
+                    <category name="Loops" colour="120">
+                        <block type="controls_repeat_ext">
+                            <value name="TIMES">
+                                <shadow type="math_number">
+                                    <field name="NUM">5</field>
+                                </shadow>
+                            </value>
+                        </block>
+                    </category>
+                    <!--
+                        TODO: Sounds
+                        <category name="Sounds" colour="355">
+                        <block type="play_sound"></block>
+                        </category>
+                    -->
+                </xml>     
+            </div>
+        </main>
+
+
+
+
+
+        <script src="scripts/Blockly/blockly_compressed.js"></script>
+        <script src="scripts/Blockly/blocks_compressed.js"></script>
+        <script src="scripts/Blockly/javascript_compressed.js"></script>
+        <script src="scripts/Blockly/msg/js/en.js"></script>
+        <script src="scripts/sound_blocks.js"></script>
+        <script src="scripts/index.js"></script>
+    </body>
+</html>
