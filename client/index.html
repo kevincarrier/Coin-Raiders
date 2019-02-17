@@ -161,6 +161,7 @@
 
       let container = new PIXI.Container()
       container.coins = {}
+      container.grids = JSON.parse(JSON.stringify(grids))
 
       if (isYou) {
         let box1 = new Sprite(resources["images/box1.png"].texture)
@@ -235,7 +236,7 @@
       container.addChild(basicText)
       container.nameLabel = basicText
       // Score
-      let scoreText = new PIXI.Text('score: ' + score)
+      let scoreText = new PIXI.Text('score: 0')
       scoreText.style.fill = 0xffffff
       scoreText.style.fontSize = 20
       scoreText.x = 150
@@ -251,36 +252,47 @@
       offsetX = 0
       offsetY = 0
       width = 32
+      board = boardList[idx]
+      grids = board.grids
+
+      console.log(grids, board.player_i, board.player_j, grids[board.player_i + 1][board.player_j])
       if (c == 'L') {
-        offsetX -= width
-        if (boardList[idx].player_j > 0) {
-          boardList[idx].player_j--
+        if (board.player_j > 0 && grids[board.player_i][board.player_j - 1] != 2) {
+          board.player_j--
+          offsetX -= width
         }
       } else if (c == 'R') {
-        offsetX += width
-        if (boardList[idx].player_j < 8 - 1) {
-          boardList[idx].player_j++
+        if (board.player_j < 8 - 1 && grids[board.player_i][board.player_j + 1] != 2) {
+          board.player_j++
+          offsetX += width
         }
-        
       } else if (c == 'U') {
-        offsetY -= width
-        if (boardList[idx].player_i > 0) {
-          boardList[idx].player_i--
+        if (board.player_i > 0 && grids[board.player_i - 1][board.player_j] != 2) {
+          board.player_i--
+          offsetY -= width
         }
       } else if (c == 'D') {
-        offsetY += width
-        if (boardList[idx].player_i < 8 - 1) {
-          boardList[idx].player_i++
+        if (board.player_i < 8 - 1 && grids[board.player_i + 1][board.player_j] != 2) {
+          board.player_i++
+          offsetY += width
         }
       }
 
       boardList[idx].player.x += offsetX
       boardList[idx].player.y += offsetY
       
-      console.log(boardList[idx].coinMap, boardList[idx].player_i, boardList[idx].player_j)
+      
+      // console.log(boardList[idx].coinMap, boardList[idx].player_i, boardList[idx].player_j)
       if (boardList[idx].coinMap[boardList[idx].player_i][boardList[idx].player_j] != 0) {
         boardList[idx].score ++
         boardList[idx].scoreLabel.text = "score: " + boardList[idx].score
+
+        if (idx == 0 || idx == 2) {
+          team1text.text = 'Team 1   Score ' + (boardList[0].score + boardList[2].score)
+        }
+        if (idx == 1 || idx == 3) {
+          team1text.text = 'Team 2   Score ' + (boardList[1].score + boardList[3].score)
+        }
 
         i = boardList[idx].player_i
         j = boardList[idx].player_j
@@ -289,6 +301,9 @@
         delete boardList[idx].coins['i' + i + 'j' + j]
       }
     }
+
+    let team1text
+    let team2text
 
     function setup() {
       //Create the `cat` sprite 
@@ -299,14 +314,14 @@
       let bg = new Sprite(resources["images/bg.png"].texture)
       app.stage.addChild(bg)
 
-      let team1text = new PIXI.Text('Team 1   Score 0')
+      team1text = new PIXI.Text('Team 1   Score 0')
       team1text.style.fill = 0xffffff
       team1text.style.fontSize = 30
       team1text.x = 30
       team1text.y = 5
       app.stage.addChild(team1text)
 
-      let team2text = new PIXI.Text('Team 2   Score 0')
+      team2text = new PIXI.Text('Team 2   Score 0')
       team2text.style.fill = 0xffffff
       team2text.style.fontSize = 30
       team2text.x = 380
@@ -363,7 +378,7 @@
       //Set the game state
       state = play
 
-      excutingInput[0] = ['l', 'r', 'l', 'r', 'd', 'd']
+      excutingInput[0] = ['l', 'r', 'l', 'r', 'd', 'd', 'd', 'd', 'l', 'l', 'l', 'd', 'd', 'r']
 
       //Start the game loop 
       app.ticker.add(delta => gameLoop(delta));
@@ -391,7 +406,6 @@
           //console.log('ss', command)
           move(key, command)
         }
-
       }
     }
   
