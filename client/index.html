@@ -28,9 +28,13 @@
 
   <script>
     let gameState = {
-      curPlayerId: '',
+      curPlayerName: '',
       winState: [],
-      playersData: []
+      playersName: [],
+      playersReadyData: [],
+      playersScore: [],
+      playersGridData: [],
+      playersInputData: []
     }
     let Application = PIXI.Application,
       Container = PIXI.Container,
@@ -55,6 +59,7 @@
       .add("images/coin.png")
       .add("images/character1.png")
       .add("images/bg.png")
+      .add("images/box1.png")
       .load(setup)
     
     //Define any variables that are used in more than one function
@@ -62,7 +67,9 @@
 
     const CELL_WIDTH = 32;
 
-    function setupBoard(grids) {
+    function setupBoard(grids, name, score, isYou) {
+      name = 'test'
+      score = 9887
       grids = [[0, 4, 0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 3, 0, 0, 0, 0, 0, 0],
@@ -73,6 +80,13 @@
                [0, 0, 3, 3, 3, 3, 3, 3]]
 
       let container = new PIXI.Container()
+
+      if (isYou) {
+        let box1 = new Sprite(resources["images/box1.png"].texture)
+        box1.x -= 23
+        box1.y -= 35
+        container.addChild(box1)
+      }
 
       // Fill the map
       let x = 0
@@ -115,6 +129,22 @@
           }
         }
       }
+
+      // Name
+      let basicText = new PIXI.Text(name)
+      basicText.style.fill = 0xffffff
+      basicText.style.fontSize = 20
+      basicText.x = 0
+      basicText.y = -25
+      container.addChild(basicText)
+      // Score
+      let scoreText = new PIXI.Text('score: ' + score)
+      scoreText.style.fill = 0xffffff;
+      scoreText.style.fontSize = 20
+      scoreText.x = 150
+      scoreText.y = -25
+      container.addChild(scoreText)
+
       return container
     }
 
@@ -123,25 +153,39 @@
       // land1 = new Sprite(resources["images/land1.png"].texture);
       // land1.x = 96;
       // land1.y = 96;
-      let board0 = setupBoard()
-      let board1 = setupBoard()
+      let board0 = setupBoard([], '', '', false)
+      let board1 = setupBoard([], '', '', true)
       let board2 = setupBoard()
       let board3 = setupBoard()
 
       board0.x = 50
-      board0.y = 30
+      board0.y = 90
 
       board1.x = 400
-      board1.y = 30
+      board1.y = 90
 
       board2.x = 50
-      board2.y = 320
+      board2.y = 400
 
       board3.x = 400
-      board3.y = 320
+      board3.y = 400
 
       let bg = new Sprite(resources["images/bg.png"].texture)
       app.stage.addChild(bg)
+
+      let team1text = new PIXI.Text('Team 1   Score 2000')
+      team1text.style.fill = 0xffffff
+      team1text.style.fontSize = 30
+      team1text.x = 30
+      team1text.y = 5
+      app.stage.addChild(team1text)
+
+      let team2text = new PIXI.Text('Team 2   Score 2000')
+      team2text.style.fill = 0xffffff
+      team2text.style.fontSize = 30
+      team2text.x = 380
+      team2text.y = 5
+      app.stage.addChild(team2text)
 
       app.stage.addChild(board0)
       app.stage.addChild(board1)
