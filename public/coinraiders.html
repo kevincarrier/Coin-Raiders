@@ -89,6 +89,7 @@
   </script> 
 
   <script>
+    
       let wsTxt = '[ws]';
       let ws_c
 
@@ -153,10 +154,15 @@
                 console.log(msgObj.data);//get all user name
                 // console.log(msgObj.data[0]);
 
-                $('#runcodebtn').hide()
-
+                if (msgObj.data.length >= 4) {
+                  $('#runcodebtn').show()
+                  alert("Game Start!")
+                } else{
+                  $('#runcodebtn').hide()
+                }
+                
                 for (let i = 0; i < msgObj.data.length; i++) {
-                  console.log(i,msgObj.data[i].idx,msgObj.data[i].playername)
+                  console.log('ssssss', i,msgObj.data[i].idx,msgObj.data[i].playername)
                   boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
                 }
               }
@@ -178,7 +184,7 @@
         $('#playername').hide();
         $('#idx').hide();
         connect_to_server();
-
+        $('#runcodebtn').hide()
 
 
 

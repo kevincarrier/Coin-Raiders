@@ -33,7 +33,7 @@ router.post("/",async(req,res)=>{
 		console.log("login board"); 
 		console.log(playername);
 		console.log(index);
-		if(check(playerlist,playername)&&(index=='1'||index=='2'||index=='3'||index=='0')){
+		if(index=='1'||index=='2'||index=='3'||index=='0'){
 			// res.cookie("AuthCookie", playername, { expires: new Date(Date.now() + 900000) });
 			// console.log("login",res.cookies);
 			//res.render() page for game
