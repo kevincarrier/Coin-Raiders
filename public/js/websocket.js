@@ -1,6 +1,6 @@
 let wsTxt = '[ws]';
 
-function connect_to_server(name,idx){
+function connect_to_server(){
 	let connected = false;
 	connect();
 
@@ -44,7 +44,7 @@ function connect_to_server(name,idx){
 				console.log(msgObj);
 			}
 			else if(msgObj.msg === "user_info"){
-				console.log("Received");
+				console.log("Received user info");
 				console.log(msgObj.data);//get all user name
 			}
 			else if(msgObj.msg === ""){
