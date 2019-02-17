@@ -103,9 +103,19 @@
       try {
         //eval(code)
         // passed the test, now what...
+        code = code.replace(/\n/g,"")
         let codeArr = code.split(',')
         codeArr.pop()
         console.log(codeArr)
+
+        while (true) {
+          index = codeArr.indexOf("")
+          if (index != -1) {
+            codeArr.splice(index, 1)
+          } else {
+            break
+          }
+        }
 
       } catch (e) {
         // failed so show the error
@@ -144,8 +154,6 @@
     let state
     const CELL_WIDTH = 32
     function setupBoard(grids, score, idx) {
-      score = 0
-
       if (idx == curIdx) 
         isYou = true
       else
@@ -187,7 +195,6 @@
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
-            container.player = sp
           } else if (val == 3) {
             // Coin
             let sp = new Sprite(resources["images/coin.png"].texture)
@@ -201,12 +208,14 @@
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
-            console.log('aaa')
+            container.player = sp
+            container.player_i = i
+            container.player_j = j
           }
         }
       }
 
-      let coinMap = grids.slice()
+      let coinMap = JSON.parse(JSON.stringify(grids))
       for (let i = 0; i < coinMap.length; i++) {
         for (let j = 0; j < coinMap[0].length; j++) {
           if (coinMap[i][j] != 3) {
@@ -214,7 +223,8 @@
           }
         }
       }
-      gameState.playersCoinMap[name] = coinMap
+      container.coinMap = coinMap
+      container.score = 0
 
       // Name
       let basicText = new PIXI.Text(name)
@@ -223,6 +233,7 @@
       basicText.x = 0
       basicText.y = -25
       container.addChild(basicText)
+      container.nameLabel = basicText
       // Score
       let scoreText = new PIXI.Text('score: ' + score)
       scoreText.style.fill = 0xffffff
@@ -230,13 +241,53 @@
       scoreText.x = 150
       scoreText.y = -25
       container.addChild(scoreText)
-
+      container.scoreLabel = scoreText
       return container
     }
 
     function move(idx, command) {
-      if (command == '')
-      boardList[idx].player 
+      command = command.toUpperCase()
+      c = command.charAt(0)
+      offsetX = 0
+      offsetY = 0
+      width = 32
+      if (c == 'L') {
+        offsetX -= width
+        if (boardList[idx].player_j > 0) {
+          boardList[idx].player_j--
+        }
+      } else if (c == 'R') {
+        offsetX += width
+        if (boardList[idx].player_j < 8 - 1) {
+          boardList[idx].player_j++
+        }
+        
+      } else if (c == 'U') {
+        offsetY -= width
+        if (boardList[idx].player_i > 0) {
+          boardList[idx].player_i--
+        }
+      } else if (c == 'D') {
+        offsetY += width
+        if (boardList[idx].player_i < 8 - 1) {
+          boardList[idx].player_i++
+        }
+      }
+
+      boardList[idx].player.x += offsetX
+      boardList[idx].player.y += offsetY
+      
+      console.log(boardList[idx].coinMap, boardList[idx].player_i, boardList[idx].player_j)
+      if (boardList[idx].coinMap[boardList[idx].player_i][boardList[idx].player_j] != 0) {
+        boardList[idx].score ++
+        boardList[idx].scoreLabel.text = "score: " + boardList[idx].score
+
+        i = boardList[idx].player_i
+        j = boardList[idx].player_j
+        console.log(boardList[idx].coins['i' + i + 'j' + j])
+        boardList[idx].removeChild(boardList[idx].coins['i' + i + 'j' + j])
+        delete boardList[idx].coins['i' + i + 'j' + j]
+      }
     }
 
     function setup() {
@@ -281,23 +332,21 @@
         [0, 3, 0, 0, 0, 0, 3, 0],
         [0, 3, 3, 3, 3, 3, 3, 3],
         [0, 0, 0, 0, 0, 0, 3, 0]]
-      
-      
-      // let board0 = setupBoard(JSON.parse(JSON.stringify(grids0)), '', true)
-      // let board1 = setupBoard(JSON.parse(JSON.stringify(grids0)), '', true)
-      // let board2 = setupBoard(JSON.parse(JSON.stringify(grids1)), '', true)
-      // let board3 = setupBoard(JSON.parse(JSON.stringify(grids1)), '', false)
 
-      // boardList.push(board0)
-      // boardList.push(board1)
-      // boardList.push(board2)
-      // boardList.push(board3)
+      let board = setupBoard(JSON.parse(JSON.stringify(grids0)), '', 0)
+      boardList.push(board)
+      app.stage.addChild(board)
+      board = setupBoard(JSON.parse(JSON.stringify(grids0)), '', 1)
+      boardList.push(board)
+      app.stage.addChild(board)
+      board = setupBoard(JSON.parse(JSON.stringify(grids1)), '', 2)
+      boardList.push(board)
+      app.stage.addChild(board)
+      board = setupBoard(JSON.parse(JSON.stringify(grids1)), '', 3)
+      boardList.push(board)
+      app.stage.addChild(board)
 
-      for (let i = 0; i < 4; i++) {
-        let board = setupBoard(JSON.parse(JSON.stringify(grids0)), '', i)
-        boardList.push(board)
-        app.stage.addChild(board)
-      }
+      board.score = 0
 
       boardList[0].x = 50
       boardList[0].y = 90
@@ -314,6 +363,8 @@
       //Set the game state
       state = play
 
+      excutingInput[0] = ['l', 'r', 'l', 'r', 'd', 'd']
+
       //Start the game loop 
       app.ticker.add(delta => gameLoop(delta));
     }
@@ -326,15 +377,21 @@
     interval = 0
     function play(delta) {
       // Game main loop.
-      if (interval < delta) {
+      if (interval < 20) {
         interval += delta
         return
       } 
       interval = 0
 
+      //console.log(interval, delta)
+
       for (let key in excutingInput) {
         let command = excutingInput[key].shift()
-        move(idx, command)
+        if (command) {
+          //console.log('ss', command)
+          move(key, command)
+        }
+
       }
     }
   

@@ -88,18 +88,18 @@ Blockly.defineBlocksWithJsonArray([
   ]);
   
   Blockly.JavaScript['move_left'] = function(block) {
-    return "Left,";
+    return "l,";
   };
 
   Blockly.JavaScript['move_right'] = function(block) {
-    return "Right,";
+    return "r,";
   };
   Blockly.JavaScript['move_up'] = function(block) {
-    return "Up,";
+    return "u,";
   };
 
   Blockly.JavaScript['move_down'] = function(block) {
-    return "Down,";
+    return "d,";
   };
 
   Blockly.JavaScript['custom_repeat'] = function(block) {
