@@ -7,7 +7,7 @@ const ejs = require('ejs');
 const ws = require('ws'); 
 const http = require('http');
 const winston = require('winston'); 
-// web socket logic const ws_server = require();
+const cookieParser = require("cookie-parser");
 
 let logger = winston.createLogger({
 	level: 'debug',
@@ -16,10 +16,12 @@ let logger = winston.createLogger({
 	]
 }); 
 
+const ws_server = require('./utils/websocket_server_side.js')(logger);
+
 app.use(static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.engine('html', ejs.__express);
 app.set('view engine', 'html');
 
@@ -52,13 +54,14 @@ function setupWebSocket() {
 			}
 				
 			if (data) {
-				//ws_server.process_msg(ws, data);							//pass the websocket msg for processing
+				console.log(data);
+				ws_server.process_msg(ws, data);							//pass the websocket msg for processing
 			}
 		});
 
 		ws.on('error', function (e) { logger.debug('[ws] error', e); });
 		ws.on('close', function () { logger.debug('[ws] closed'); });
-		ws.send(JSON.stringify(build_state_msg()));							//tell client our app state
+		//ws.send(JSON.stringify(build_state_msg()));							//tell client our app state
 	});
 
 	// --- Send To All Connected Clients --- //

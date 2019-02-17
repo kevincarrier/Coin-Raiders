@@ -10,12 +10,13 @@ function check(playerlist,playername){
 }
 
 router.get("/",async(req,res)=>{
+	console.log(req.cookies);
 	try{
 		if(req.cookies && req.cookies.AuthCookie){
 			res.redirect("/game");
 		}
 		else{
-			res.send("Login Game for Morgan");
+			res.render("../public/page");
 		//res.render() page for enter user name
 		}
 	}
@@ -27,10 +28,12 @@ router.get("/",async(req,res)=>{
 router.post("/",async(req,res)=>{
 	try{
 		let playername = req.body["playername"];
+		console.log(playername);
 		if(check(playerlist,playername)){
 			res.cookie("AuthCookie", playername, { expires: new Date(Date.now() + 900000) });
+			console.log("login",res.cookies);
 			//res.render() page for game
-			res.send("Welcome to Game for Morgan");
+			res.redirect("/game");
 		} 
 		else res.send("Player name occpuied");
 	}
@@ -42,11 +45,12 @@ router.post("/",async(req,res)=>{
 router.get("/game",async(req,res)=>{
 	try{
 		if(req.cookies && req.cookies.AuthCookie){
-			res.redirect("/");
+			res.render("../public/game");
+			//res.render() page for game
 		}
 		else{
-			res.send("welcome to game for morgan");
-			//res.render() page for game
+			res.redirect("/");
+			
 		}
 	}
 	catch(e){
