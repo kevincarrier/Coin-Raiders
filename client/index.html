@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Game states</title>
+<title>Coin Raider</title>
 
 <body>
   <script src="pixi.js"></script>
@@ -27,6 +27,8 @@
   </script> 
 
   <script>
+    let excutedInputData = {}
+
     let gameState = {
       curPlayerName: '',
       winState: [],
@@ -34,8 +36,10 @@
       playersReadyData: [],
       playersScore: [],
       playersGridData: [],
-      playersInputData: []
+      playersInputData: [],
+      playersCoinMap: {}
     }
+
     let Application = PIXI.Application,
       Container = PIXI.Container,
       loader = PIXI.loader,
@@ -62,11 +66,8 @@
       .add("images/box1.png")
       .load(setup)
     
-    //Define any variables that are used in more than one function
-    let cat, state;
-
-    const CELL_WIDTH = 32;
-
+    let state
+    const CELL_WIDTH = 32
     function setupBoard(grids, name, score, isYou) {
       name = 'test'
       score = 9887
@@ -103,6 +104,7 @@
         x = 0
         y += offset
       }
+
       // Fill the player, blocks and items.
       for (let i = 0; i < grids.length; i++) {
         for (let j = 0; j < grids[0].length; j++) {
@@ -120,6 +122,8 @@
             sp.x = j * CELL_WIDTH
             sp.y = i * CELL_WIDTH
             container.addChild(sp)
+
+            coinMap = 
           }else if (val == 4) {
             // Player initial position
             let sp = new Sprite(resources["images/character1.png"].texture)
@@ -129,6 +133,9 @@
           }
         }
       }
+      
+      let coinMap = []
+      playersCoinMap[name] = coinMap
 
       // Name
       let basicText = new PIXI.Text(name)
@@ -193,17 +200,34 @@
       app.stage.addChild(board3)
 
       //Set the game state
-      state = play;
+      state = play
 
       //Start the game loop 
       app.ticker.add(delta => gameLoop(delta));
     }
     function gameLoop(delta) {
       //Update the current game state:
-      state(delta);
+      state(delta)
     }
+    let excutingInput = {}
     function play(delta) {
-      
+      for (let key in excutingInput) {
+        
+      }
+    }
+  
+    function dataChange() {
+      // This function run at after gameState updated by other function.
+      // When game data changes(Get broadcast from the server)
+      // Check wether the input commands get excuted. If not excuted the input command with certain speed.
+      let inputDatas = gameState.playersInputData
+      for (let key in inputDatas) {
+        let inputData = inputDatas[key]
+        if (!(key in excutedInputData)) {
+          excutedInputData[key] = inputData
+          excutingInput[key] = inputData
+        }
+      }
     }
   </script>
 </body>
