@@ -156,6 +156,7 @@
                 $('#runcodebtn').hide()
 
                 for (let i = 0; i < msgObj.data.length; i++) {
+                  console.log(i,msgObj.data[i].idx,msgObj.data[i].playername)
                   boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
                 }
               }

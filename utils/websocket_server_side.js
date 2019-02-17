@@ -5,10 +5,11 @@ let user_info_list=new Array();
 
 function check(user_info_list,user){
 	for (let i=0;i<user_info_list.length;++i){
-		if(user_info_list.name==user.name)return false;
+		if(user_info_list[i].name==user.playername)return false;
 	}
 	return true;
 }
+
 module.exports = function (logger) {
 	let ws_server = {};
 	// process web socket messages
@@ -46,6 +47,7 @@ module.exports = function (logger) {
 			};
 			if(check(user_info_list,obj))user_info_list.push(obj);
 			console.log("user_info_req");
+			console.log(user_info_list)
 			updatemessage={msg: 'user_info',data:user_info_list};
 			return updatemessage;
 		}
