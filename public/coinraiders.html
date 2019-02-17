@@ -89,7 +89,7 @@
   </script> 
 
   <script>
-    
+    let executeCount = 0
       let wsTxt = '[ws]';
       let ws_c
 
@@ -138,6 +138,7 @@
             console.log(wsTxt + ' ERROR ', evt);
           }
 
+          
           function onMessage(msg) {
             try {
               let msgObj = JSON.parse(msg.data);
@@ -147,13 +148,13 @@
                 console.log(msgObj);
 
                 excutingInput[msgObj.data.idx] = msgObj.data.command
+                executeCount ++
               }
               else if (msgObj.msg === "user_info") {
                 // Name 
                 console.log("Received user info");
                 console.log(msgObj.data);//get all user name
-                // console.log(msgObj.data[0]);
-
+                // console.log(msgObj.data[0])
                 if (msgObj.data.length >= 4) {
                   $('#runcodebtn').show()
                   alert("Game Start!")
@@ -162,7 +163,7 @@
                 }
                 
                 for (let i = 0; i < msgObj.data.length; i++) {
-                  console.log('ssssss', i,msgObj.data[i].idx,msgObj.data[i].playername)
+                  // console.log('ssssss', i,msgObj.data[i].idx,msgObj.data[i].playername)
                   boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
                 }
               }
@@ -233,7 +234,8 @@
       playersInputData: [],
       playersCoinMap: {}
     }
-
+    let team1score = 0
+    let team2score = 0
     const urlParams = new URLSearchParams(location.search)
     let curName = urlParams.get('name')
     let curIdx = urlParams.get('idx')
@@ -437,9 +439,11 @@
         boardList[idx].scoreLabel.text = "score: " + boardList[idx].score
 
         if (idx == 0 || idx == 2) {
+          team1score = boardList[0].score + boardList[2].score
           team1text.text = 'Team 1   Score ' + (boardList[0].score + boardList[2].score)
         }
         if (idx == 1 || idx == 3) {
+          team2score = boardList[1].score + boardList[3].score
           team2text.text = 'Team 2   Score ' + (boardList[1].score + boardList[3].score)
         }
 
@@ -555,6 +559,23 @@
           //console.log('ss', command)
           move(key, command)
         }
+      }
+      checkOver = true
+      for (let key in excutingInput) {
+        if(excutingInput[key].length > 0) {
+          checkOver = false
+          return
+        }
+      }
+      if (executeCount >= 4 && checkOver) {
+        if (team1score > team2score) {
+          alert("Team 1 Win!")
+        } else if (team1score < team2score) {
+          alert("Team 2 Win!")
+        } else {
+          alert("Tie!")
+        }
+        
       }
     }
   
