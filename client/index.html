@@ -7,7 +7,8 @@
   <script src="./google-blockly-82871b3/blockly_compressed.js"></script>
   <script src="./google-blockly-82871b3/blocks_compressed.js"></script>
   <script src="./google-blockly-82871b3/msg/js/en.js"></script>
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  
+  <!-- <div id="blocklyDiv" style="height: 480px; width: 600px;"></div> -->
 
   <xml id="toolbox" style="display: none">
     <block type="controls_if"></block>
@@ -18,14 +19,19 @@
     <block type="text"></block>
     <block type="text_print"></block>
   </xml>
-
-  <script>
-    var workspace = Blockly.inject('blocklyDiv',
-      { toolbox: document.getElementById('toolbox') });
-  </script>
   
   <script>
-    //Aliases
+    // Fixed window injection
+    var workspace = Blockly.inject('blocklyDiv',
+      { toolbox: document.getElementById('toolbox') });
+  </script> 
+
+  <script>
+    let gameState = {
+      curPlayerId: '',
+      winState: [],
+      playersData: []
+    }
     let Application = PIXI.Application,
       Container = PIXI.Container,
       loader = PIXI.loader,
@@ -34,9 +40,9 @@
       Sprite = PIXI.Sprite;
     //Create a Pixi Application
     let app = new Application({
-      width: 256,
-      height: 256,
-      antialiasing: true,
+      width: 700,
+      height: 690,
+      antialiasing: false,
       transparent: false,
       resolution: 1
     }
@@ -44,17 +50,104 @@
     //Add the canvas that Pixi automatically created for you to the HTML document
     document.body.appendChild(app.view);
     loader
-      .add("images/cat.png")
-      .load(setup);
+      .add("images/land1.png")
+      .add("images/block2.png")
+      .add("images/coin.png")
+      .add("images/character1.png")
+      .add("images/bg.png")
+      .load(setup)
+    
     //Define any variables that are used in more than one function
     let cat, state;
+
+    const CELL_WIDTH = 32;
+
+    function setupBoard(grids) {
+      grids = [[0, 4, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 3, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 2, 2, 2, 2, 2, 0, 0],
+               [0, 3, 0, 0, 0, 0, 0, 0],
+               [0, 3, 3, 0, 0, 0, 0, 0],
+               [0, 0, 3, 3, 3, 3, 3, 3]]
+
+      let container = new PIXI.Container()
+
+      // Fill the map
+      let x = 0
+      let y = 0
+      offset = 32
+      for (let i = 0; i < grids.length; i++) {
+        for (let j = 0; j < grids[0].length; j++) {
+          let sp = new Sprite(resources["images/land1.png"].texture)
+          sp.x = x
+          sp.y = y
+          x += offset
+          container.addChild(sp)
+        }
+        x = 0
+        y += offset
+      }
+      // Fill the player, blocks and items.
+      for (let i = 0; i < grids.length; i++) {
+        for (let j = 0; j < grids[0].length; j++) {
+          let val = grids[i][j]
+          
+          if (val == 2) {
+            // Block
+            let sp = new Sprite(resources["images/block2.png"].texture)
+            sp.x = j * CELL_WIDTH
+            sp.y = i * CELL_WIDTH
+            container.addChild(sp)
+          } else if (val == 3) {
+            // Coin
+            let sp = new Sprite(resources["images/coin.png"].texture)
+            sp.x = j * CELL_WIDTH
+            sp.y = i * CELL_WIDTH
+            container.addChild(sp)
+          }else if (val == 4) {
+            // Player initial position
+            let sp = new Sprite(resources["images/character1.png"].texture)
+            sp.x = j * CELL_WIDTH
+            sp.y = i * CELL_WIDTH
+            container.addChild(sp)
+          }
+        }
+      }
+      return container
+    }
+
     function setup() {
       //Create the `cat` sprite 
-      cat = new Sprite(resources["images/cat.png"].texture);
-      cat.y = 96;
-      cat.vx = 0;
-      cat.vy = 0;
-      app.stage.addChild(cat);
+      // land1 = new Sprite(resources["images/land1.png"].texture);
+      // land1.x = 96;
+      // land1.y = 96;
+      let board0 = setupBoard()
+      let board1 = setupBoard()
+      let board2 = setupBoard()
+      let board3 = setupBoard()
+
+      board0.x = 50
+      board0.y = 30
+
+      board1.x = 400
+      board1.y = 30
+
+      board2.x = 50
+      board2.y = 320
+
+      board3.x = 400
+      board3.y = 320
+
+      let bg = new Sprite(resources["images/bg.png"].texture)
+      app.stage.addChild(bg)
+
+      app.stage.addChild(board0)
+      app.stage.addChild(board1)
+      app.stage.addChild(board2)
+      app.stage.addChild(board3)
+
       //Set the game state
       state = play;
 
@@ -66,9 +159,7 @@
       state(delta);
     }
     function play(delta) {
-      //Move the cat 1 pixel to the right each frame
-      cat.vx = 1
-      cat.x += cat.vx;
+      
     }
   </script>
 </body>
