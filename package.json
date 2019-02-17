@@ -1,0 +1,32 @@
+{
+  "name": "duckhacks-csgame",
+  "version": "1.0.0",
+  "description": "Develop a game that helps introduce kids to computer science. The game must be something that can be experienced by a group of kids working together and must have a competitive element for them to compete in real time against other teams.",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevincarrier/DuckHacks-CSGame.git"
+  },
+  "keywords": [
+    "JPMorgan",
+    "Game"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevincarrier/DuckHacks-CSGame/issues"
+  },
+  "homepage": "https://github.com/kevincarrier/DuckHacks-CSGame#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "winston": "^3.2.1",
+    "ws": "^6.1.4"
+  }
+}
