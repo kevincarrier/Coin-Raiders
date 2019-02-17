@@ -13,7 +13,7 @@
     <script type="text/javascript" src="js/ui_event.js"></script>
     <script type="text/javascript" src="js/websocket.js"></script>
 </head>
-<title>Coin Raider</title>
+<title>Coin Raiders</title>
 
 <body>
   <script src="pixi.js"></script>
@@ -78,57 +78,143 @@
       <block type="text_print"></block>
     -->
     </xml></div>
-    <button type="submit" id="command" class="btn btn-primary">Submit</button>
+    <!-- <button type="submit" id="command" class="btn btn-primary">Submit</button>
         <button type="submit" id="start" class="btn btn-primary">Start</button>
         <p id="playername"><%=playername%></p>
-        <p id="idx"><%=idx%></p>
+        <p id="idx"><%=idx%></p> -->
   </div>
   
   <script>
-    // Fixed window injection
-    let ws_c = {};
-$(document).ready(function () {
-  $('#command').hide();
-  $('#playername').hide();
-  $('#idx').hide();
-  connect_to_server();
-  $('#command').click(function(){
-    console.log("hhhh");
-    console.log('----------command from user-------------');
-    let obj =   {
-            type: 'user_command',
-            command: 'leave to be continue'
-        };
-    if(obj.command){
-      ws_c.send(JSON.stringify(obj));
-    }
-    return false;
-  });
-
-  $('#start').click(function(){
-    let name=document.getElementById("playername").innerHTML;
-    let idx=document.getElementById("idx").innerHTML;
-    console.log("login board",name,idx);
-    console.log('----------command from user-------------');
-    let obj =   {
-            type: 'user_info_req',
-            name: name,
-            idx:idx
-        };
-    console.log(obj);
-    if(obj.name){
-      ws_c.send(JSON.stringify(obj));
-      $('#start').hide();
-      $('#command').show();
-    }
-    return false;
-  });
-});
-    var workspace = Blockly.inject('blocklyDiv',
-      { toolbox: document.getElementById('toolbox') });
+    
   </script> 
 
   <script>
+      let wsTxt = '[ws]';
+      let ws_c
+
+        function connect_to_server() {
+          let connected = false;
+          connect();
+
+          function connect() {
+            var wsUri = null;
+            if (document.location.protocol === 'https:') {
+              wsTxt = '[wss]';
+              wsUri = 'wss://' + document.location.hostname + ':' + document.location.port;
+            } else {
+              wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
+            }
+            console.log(wsTxt + ' Connecting to websocket', wsUri);
+
+            ws_c = new WebSocket(wsUri);
+            ws_c.onopen = function (evt) { onOpen(evt); };
+            ws_c.onclose = function (evt) { onClose(evt); };
+            ws_c.onmessage = function (evt) { onMessage(evt); };
+            ws_c.onerror = function (evt) { onError(evt); };
+          }
+
+          function onOpen(evt) {
+            console.log(wsTxt + ' CONNECTED');
+            connected = true;
+
+
+                    let obj = {
+              type: 'user_info_req',
+              name: curName,
+              idx: curIdx
+            };
+            console.log(obj);
+            if (obj.name) {
+              ws_c.send(JSON.stringify(obj));
+            }
+          }
+
+          function onClose(evt) {
+            console.log(wsTxt + ' DISCONNECTED', evt);
+            connected = false;
+            setTimeout(function () { connect(); }, 5000);					//try again one more time, server restarts are quick
+          }
+
+          function onError(evt) {
+            console.log(wsTxt + ' ERROR ', evt);
+          }
+
+          function onMessage(msg) {
+            try {
+              let msgObj = JSON.parse(msg.data);
+              if (msgObj.msg === "backmessage") {
+
+                console.log("Received");
+                console.log(msgObj);
+
+                excutingInput[msgObj.data.idx] = msgObj.data.command
+              }
+              else if (msgObj.msg === "user_info") {
+                // Name 
+                console.log("Received user info");
+                console.log(msgObj.data);//get all user name
+                // console.log(msgObj.data[0]);
+
+                for (let i = 0; i < msgObj.data.length; i++) {
+                  boardList[msgObj.data[i].idx].nameLabel.text = msgObj.data[i].playername
+                }
+              }
+              else if (msgObj.msg === "") {
+
+              }
+              else if (msgObj.msg === "") {
+
+              }
+            }
+            catch (e) {
+              console.log(wsTxt + ' error handling a ws message', e);
+            }
+          }
+        }
+
+      $(document).ready(function () {
+        $('#command').hide();
+        $('#playername').hide();
+        $('#idx').hide();
+        connect_to_server();
+
+
+
+
+        $('#command').click(function () {
+          console.log('----------command from user-------------');
+          let obj = {
+            type: 'user_command',
+            command: 'leave to be continue'
+          };
+          if (obj.command) {
+            ws_c.send(JSON.stringify(obj));
+          }
+          return false;
+        });
+
+        $('#start').click(function () {
+          let name = document.getElementById("playername").innerHTML;
+          let idx = document.getElementById("idx").innerHTML;
+          console.log("login board", name, idx);
+          console.log('----------command from user-------------');
+          let obj = {
+            type: 'user_info_req',
+            name: name,
+            idx: idx
+          };
+  
+          if (obj.name) {
+            ws_c.send(JSON.stringify(obj));
+            $('#start').hide();
+            $('#command').show();
+          }
+          return false;
+        });
+      });
+      var workspace = Blockly.inject('blocklyDiv',
+        { toolbox: document.getElementById('toolbox') });
+
     let excutedInputData = {}
 
     let gameState = {
@@ -154,7 +240,7 @@ $(document).ready(function () {
         code = code.replace(/\n/g,"")
         let codeArr = code.split(',')
         codeArr.pop()
-        console.log(codeArr)
+        //console.log(codeArr)
 
         while (true) {
           index = codeArr.indexOf("")
@@ -165,6 +251,13 @@ $(document).ready(function () {
           }
         }
 
+        let obj = {
+          type: 'user_command',
+          command: {idx: curIdx, command: codeArr}
+        };
+        if (obj.command) {
+          ws_c.send(JSON.stringify(obj));
+        }
       } catch (e) {
         // failed so show the error
         alert(e)
@@ -303,7 +396,7 @@ $(document).ready(function () {
       board = boardList[idx]
       grids = board.grids
 
-      console.log(grids, board.player_i, board.player_j, grids[board.player_i + 1][board.player_j])
+      //console.log(grids, board.player_i, board.player_j, grids[board.player_i + 1][board.player_j])
       if (c == 'L') {
         if (board.player_j > 0 && grids[board.player_i][board.player_j - 1] != 2) {
           board.player_j--
@@ -344,7 +437,7 @@ $(document).ready(function () {
 
         i = boardList[idx].player_i
         j = boardList[idx].player_j
-        console.log(boardList[idx].coins['i' + i + 'j' + j])
+        //console.log(boardList[idx].coins['i' + i + 'j' + j])
         boardList[idx].removeChild(boardList[idx].coins['i' + i + 'j' + j])
         delete boardList[idx].coins['i' + i + 'j' + j]
       }
@@ -426,7 +519,7 @@ $(document).ready(function () {
       //Set the game state
       state = play
 
-      excutingInput[0] = ['l', 'r', 'l', 'r', 'd', 'd', 'd', 'd', 'l', 'l', 'l', 'd', 'd', 'r']
+      // excutingInput[0] = ['l', 'r', 'l', 'r', 'd', 'd', 'd', 'd', 'l', 'l', 'l', 'd', 'd', 'r']
 
       //Start the game loop 
       app.ticker.add(delta => gameLoop(delta));

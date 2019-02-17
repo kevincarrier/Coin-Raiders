@@ -17,10 +17,10 @@ module.exports = function (logger) {
 		let updatemessage;
 		if(data.type==="user_command"){
 
-			if(data.command==="leave to be continue"){
+			if(data.command){
 
 				//sendMsg({msg: 'backmessage'});
-				updatemessage={msg: 'backmessage'};
+				updatemessage={msg: 'backmessage',data:data.command};
 				return updatemessage;
 			}
 			else if(data.command==="x"){
